@@ -5,7 +5,7 @@ namespace MvcAuthPractice.Controllers;
 
 public class AccountController : Controller
 {
-    // Для цієї навчальної роботи акаунти зберігаються в пам'яті.
+    //акаунти зберігаються в пам'яті.
     private static List<User> users = new List<User>();
 
     public IActionResult Register()
