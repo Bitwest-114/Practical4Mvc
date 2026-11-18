@@ -15,7 +15,8 @@
 </head>
 <body>
     <nav>
-        @if (Context.Session.GetString("UserName") is string userName)
+        @{ string? userName = Context.Session.GetString("UserName"); }
+        @if (userName != null)
         {
             <span>Вітаю, @userName!</span>
             <a asp-controller="Account" asp-action="Profile">Профіль</a>

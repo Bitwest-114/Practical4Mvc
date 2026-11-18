@@ -6,29 +6,38 @@ namespace MvcAuthPractice.Controllers;
 public class AccountController : Controller
 {
     // Для цієї навчальної роботи акаунти зберігаються в пам'яті.
-    private static readonly List<User> users = new List<User>();
+    private static List<User> users = new List<User>();
 
     public IActionResult Register()
     {
-        return View();
+        return View(new User());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult Register(User user)
     {
-        if (!ModelState.IsValid)
+        if (string.IsNullOrEmpty(user.Name) ||
+            string.IsNullOrEmpty(user.Email) ||
+            string.IsNullOrEmpty(user.Password))
         {
+            ViewBag.Error = "Заповни всі поля.";
             return View(user);
         }
 
-        bool emailExists = users.Any(savedUser =>
-            savedUser.Email.Equals(user.Email, StringComparison.OrdinalIgnoreCase));
-
-        if (emailExists)
+        if (user.Password.Length < 4)
         {
-            ViewBag.Error = "Такий акаунт уже зареєстрований.";
+            ViewBag.Error = "Пароль має містити хоча б 4 символи.";
             return View(user);
+        }
+
+        foreach (User savedUser in users)
+        {
+            if (savedUser.Email == user.Email)
+            {
+                ViewBag.Error = "Такий акаунт уже зареєстрований.";
+                return View(user);
+            }
         }
 
         users.Add(user);
@@ -38,30 +47,24 @@ public class AccountController : Controller
 
     public IActionResult Login()
     {
-        return View();
+        return View(new User());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Login(LoginViewModel model)
+    public IActionResult Login(User user)
     {
-        if (!ModelState.IsValid)
+        foreach (User savedUser in users)
         {
-            return View(model);
+            if (savedUser.Email == user.Email && savedUser.Password == user.Password)
+            {
+                HttpContext.Session.SetString("UserName", savedUser.Name);
+                return RedirectToAction("Profile");
+            }
         }
 
-        User? user = users.FirstOrDefault(savedUser =>
-            savedUser.Email.Equals(model.Email, StringComparison.OrdinalIgnoreCase) &&
-            savedUser.Password == model.Password);
-
-        if (user == null)
-        {
-            ViewBag.Error = "Неправильна пошта або пароль.";
-            return View(model);
-        }
-
-        HttpContext.Session.SetString("UserName", user.Name);
-        return RedirectToAction("Profile");
+        ViewBag.Error = "Неправильна пошта або пароль.";
+        return View(user);
     }
 
     public IActionResult Profile()

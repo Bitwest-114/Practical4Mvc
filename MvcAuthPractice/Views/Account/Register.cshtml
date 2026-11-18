@@ -4,17 +4,14 @@
 <p>Створи локальний навчальний акаунт.</p>
 
 <form asp-action="Register" method="post">
-    <label asp-for="Name">Ім'я</label>
-    <input asp-for="Name" />
-    <span asp-validation-for="Name" class="error"></span>
+    <label>Ім'я</label>
+    <input name="Name" value="@Model.Name" />
 
-    <label asp-for="Email">Електронна пошта</label>
-    <input asp-for="Email" />
-    <span asp-validation-for="Email" class="error"></span>
+    <label>Електронна пошта</label>
+    <input name="Email" value="@Model.Email" />
 
-    <label asp-for="Password">Пароль</label>
-    <input asp-for="Password" type="password" />
-    <span asp-validation-for="Password" class="error"></span>
+    <label>Пароль</label>
+    <input name="Password" type="password" />
 
     <span class="error">@ViewBag.Error</span>
     <button type="submit">Зареєструватися</button>
