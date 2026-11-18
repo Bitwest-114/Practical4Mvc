@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Локальна авторизація</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 680px; margin: 40px auto; padding: 0 16px; }
+        nav { display: flex; gap: 16px; align-items: center; margin-bottom: 28px; }
+        form { display: grid; gap: 10px; max-width: 360px; }
+        input, button { padding: 10px; font-size: 16px; }
+        .error { color: darkred; }
+        .message { color: darkgreen; }
+    </style>
+</head>
+<body>
+    <nav>
+        @if (Context.Session.GetString("UserName") is string userName)
+        {
+            <span>Вітаю, @userName!</span>
+            <a asp-controller="Account" asp-action="Profile">Профіль</a>
+            <form asp-controller="Account" asp-action="Logout" method="post">
+                <button type="submit">Вийти</button>
+            </form>
+        }
+        else
+        {
+            <a asp-controller="Account" asp-action="Register">Реєстрація</a>
+            <a asp-controller="Account" asp-action="Login">Вхід</a>
+        }
+    </nav>
+    @RenderBody()
+</body>
+</html>
